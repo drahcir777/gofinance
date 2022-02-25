@@ -1,7 +1,10 @@
 import styled from "styled-components/native";
 import { Feather } from '@expo/vector-icons'
+import { FlatList, FlatListProps } from 'react-native'
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize"
 import Constants from 'expo-constants';
+
+import { DataListProps } from '.';
 
 export const Container = styled.View`
 
@@ -54,7 +57,8 @@ export const UserGreeting = styled.Text`
 
 export const UserName = styled.Text`
 font-size: ${RFValue(16)}px;
-    font-family: ${({ theme }) => theme.fonts.bold};
+font-family: ${({ theme }) => theme.fonts.bold};
+color: ${({ theme }) => theme.colors.shape};
 `;
 
 export const Icon = styled(Feather)`
@@ -72,4 +76,30 @@ export const HighligthCards = styled.ScrollView.attrs({
 width: 100%;
 position: absolute;
 margin-top: ${RFPercentage(20)}px;
-`
+`;
+
+
+export const Transactions = styled.View`
+flex: 1;
+padding: 0 24px;
+margin-top: ${RFPercentage(12)}px;
+`;
+
+
+
+export const Title = styled.Text`
+    font-size: ${RFValue(18)}px;
+    font-family: ${({ theme }) => theme.fonts.regular};
+    margin-bottom: 16px;
+`;
+
+
+export const TransactionList = styled(
+    FlatList as new (props: FlatListProps<DataListProps>) => FlatList<DataListProps>
+).attrs({
+    showsVerticalScrollIndicator: false,
+    contentContainerStyle: { paddingBottom: 10 }
+})``;
+
+
+
