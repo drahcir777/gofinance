@@ -18,9 +18,13 @@ import {
 import theme from "./src/global/styles/theme";
 import { NavigationContainer } from "@react-navigation/native";
 
+//context
+import { AuthProvider } from "./src/hooks/auth";
+
 //routas
 import { AppRoutes } from "./src/routes/app.routes";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { SignIn } from "./src/screens/SignIn";
 
 export default function App() {
   const [fontsLoads] = useFonts({
@@ -42,7 +46,10 @@ export default function App() {
           barStyle="light-content"
         />
         <NavigationContainer>
-          <AppRoutes />
+          {/* <AppRoutes /> */}
+          <AuthProvider>
+            <SignIn />
+          </AuthProvider>
         </NavigationContainer>
       </ThemeProvider>
     </GestureHandlerRootView>
