@@ -26,12 +26,11 @@ import {
   LogoutButton,
   LoadContainer,
 } from "./styles";
+import { useAuth } from "../../hooks/auth";
 
 export interface DataListProps extends TransactionCardProps {
   id: string;
 }
-
-const dataKey = "@gofinance:transactions";
 
 interface HigthLigthProps {
   amount: string;
@@ -48,12 +47,18 @@ function getLastTransactionDate(
   collection: DataListProps[],
   type: "positive" | "negative"
 ) {
+  const collectionFilttered = collection.filter(
+    (transaction) => transaction.type === type
+  );
+
+  if (collectionFilttered.length === 0) return 0;
+
   const lastTransaction = new Date(
     Math.max.apply(
       Math,
-      collection
-        .filter((transaction) => transaction.type === type)
-        .map((transaction) => new Date(transaction.date).getTime())
+      collectionFilttered.map((transaction) =>
+        new Date(transaction.date).getTime()
+      )
     )
   );
 
@@ -72,7 +77,11 @@ export function Dashboard() {
     {} as HigthLigthData
   );
 
+  const { signOut, user } = useAuth();
+
   const theme = useTheme();
+
+  const dataKey = `@gofinance:transactions_user:${user.id}`;
 
   async function loadTransations() {
     const response = await AsyncStorage.getItem(dataKey);
@@ -124,7 +133,10 @@ export function Dashboard() {
       "negative"
     );
 
-    const totalInterval = `01 a ${lastTransactionEntries}`;
+    const totalInterval =
+      lastTransactionEntries === 0
+        ? "Não há transações"
+        : `01 a ${lastTransactionEntries}`;
 
     const total = entriesTotal - expensiveTotal;
 
@@ -134,14 +146,20 @@ export function Dashboard() {
           style: "currency",
           currency: "BRL",
         }),
-        lastTransaction: `Última entrada dia ${lastTransactionEntries}`,
+        lastTransaction:
+          lastTransactionEntries === 0
+            ? "Não há transações"
+            : `Última entrada dia ${lastTransactionEntries}`,
       },
       expensive: {
         amount: expensiveTotal.toLocaleString("pt-Br", {
           style: "currency",
           currency: "BRL",
         }),
-        lastTransaction: `Última saida dia ${lastTransactionExpensives}`,
+        lastTransaction:
+          lastTransactionExpensives === 0
+            ? "Não há transações"
+            : `Última saida dia ${lastTransactionEntries}`,
       },
       total: {
         amount: total.toLocaleString("pt-Br", {
@@ -154,10 +172,6 @@ export function Dashboard() {
 
     setIsLoading(false);
   }
-
-  useEffect(() => {
-    loadTransations();
-  }, []);
 
   useFocusEffect(
     useCallback(() => {
@@ -178,17 +192,17 @@ export function Dashboard() {
               <UserInfo>
                 <Photo
                   source={{
-                    uri: "https://avatars.githubusercontent.com/u/47856009?v=4",
+                    uri: user?.photo,
                   }}
                 />
 
                 <User>
                   <UserGreeting>Olá,</UserGreeting>
-                  <UserName>Richard</UserName>
+                  <UserName>{user?.name}</UserName>
                 </User>
               </UserInfo>
 
-              <LogoutButton onPress={() => {}}>
+              <LogoutButton onPress={signOut}>
                 <Icon name="power" />
               </LogoutButton>
             </UserWrapper>

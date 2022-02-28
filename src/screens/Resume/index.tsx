@@ -22,8 +22,7 @@ import { VictoryPie } from "victory-native";
 import { RFValue } from "react-native-responsive-fontsize";
 import { useTheme } from "styled-components";
 import { ActivityIndicator } from "react-native";
-
-const dataKey = "@gofinance:transactions";
+import { useAuth } from "../../hooks/auth";
 
 interface TransectionData {
   id: string;
@@ -50,6 +49,7 @@ export function Resume() {
     []
   );
 
+  const { user } = useAuth();
   const theme = useTheme();
 
   function handleDateChange(action: "next" | "prev") {
@@ -61,6 +61,7 @@ export function Resume() {
   }
 
   async function loadData() {
+    const dataKey = `@gofinance:transactions_user:${user.id}`;
     setIsLoading(true);
     const respose = await AsyncStorage.getItem(dataKey);
     const responseFormatted = respose ? JSON.parse(respose) : [];

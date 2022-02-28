@@ -26,6 +26,7 @@ import {
   Fields,
   TransactionsTypes,
 } from "./styles";
+import { useAuth } from "../../hooks/auth";
 
 interface FormData {
   [name: string]: any;
@@ -39,10 +40,10 @@ const shema = Yup.object().shape({
     .required("Valor é obrigatório!"),
 });
 
-const dataKey = "@gofinance:transactions";
-
 export function Register() {
   const { navigate }: NavigationProp<ParamListBase> = useNavigation();
+
+  const { user } = useAuth();
 
   const [category, setCategory] = useState({
     key: "category",
@@ -74,6 +75,7 @@ export function Register() {
   }
 
   async function handleRegister(form: FormData) {
+    const dataKey = `@gofinance:transactions_user:${user.id}`;
     if (!transactionType) {
       return Alert.alert("Selecione o tipo da transação");
     }
@@ -123,13 +125,9 @@ export function Register() {
   //     );
   //   }
 
-  async function removeAll() {
-    await AsyncStorage.removeItem(dataKey);
-  }
-
-  useEffect(() => {
-    //removeAll();
-  }, []);
+  //   async function removeAll() {
+  //     await AsyncStorage.removeItem(dataKey);
+  //   }
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
