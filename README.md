@@ -38,4 +38,7 @@ Smartphone Version:
 <img src="./src/assets/screenshots/gofinances.gif" width="200" alt="gofinances">
 </div>
 
-<p align="center">Copyright © 2021 Richard Freire</p>
+<div align="center">
+  <p align="center">Copyright © 2021 Richard Freire</p>
+</div> 
+
